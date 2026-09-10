@@ -1,6 +1,6 @@
 # 🇮🇳 My Assembly Speech (Class 1–5)
 
-> **Live Application URL:** [https://ais-pre-qhf33mtxw7jbc6narr7ztf-279333895425.asia-southeast1.run.app](https://ais-pre-qhf33mtxw7jbc6narr7ztf-279333895425.asia-southeast1.run.app)  
+> **Live Application URL:** [https://my-assembly-speech.vercel.app](https://my-assembly-speech.vercel.app)  
 > **Development Preview URL:** [https://ais-dev-qhf33mtxw7jbc6narr7ztf-279333895425.asia-southeast1.run.app](https://ais-dev-qhf33mtxw7jbc6narr7ztf-279333895425.asia-southeast1.run.app)  
 > **Developer:** Pawan Paji  
 
@@ -22,7 +22,7 @@ The app automatically syncs with real-time Indian Standard Time (IST) via live n
 
 ## 🚀 Live App Links
 
-- **Production Live App:** [https://ais-pre-qhf33mtxw7jbc6narr7ztf-279333895425.asia-southeast1.run.app](https://ais-pre-qhf33mtxw7jbc6narr7ztf-279333895425.asia-southeast1.run.app)
+- **Production Live App:** [https://my-assembly-speech.vercel.app](https://my-assembly-speech.vercel.app)
 - **Dev Sandbox App:** [https://ais-dev-qhf33mtxw7jbc6narr7ztf-279333895425.asia-southeast1.run.app](https://ais-dev-qhf33mtxw7jbc6narr7ztf-279333895425.asia-southeast1.run.app)
 
 ---
