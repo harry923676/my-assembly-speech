@@ -281,7 +281,7 @@ app.get('/api/events/all', (req, res) => {
 async function callGeminiWithFallbackModels(
   ai: GoogleGenAI,
   prompt: string,
-  options?: { jsonMode?: boolean; timeoutMs?: number }
+  options?: { jsonMode?: boolean; timeoutMs?: number; useGoogleSearch?: boolean }
 ): Promise<{ text: string; modelUsed: string }> {
   // Primary model 'gemini-3.8-flash', and candidate 'gemini-flash-latest' if 503/high-demand
   const modelsToTry = ['gemini-3.8-flash', 'gemini-flash-latest'];
@@ -298,6 +298,10 @@ async function callGeminiWithFallbackModels(
       const config: any = {};
       if (options?.jsonMode !== false) {
         config.responseMimeType = 'application/json';
+      }
+      if (options?.useGoogleSearch) {
+        config.tools = [{ googleSearch: {} }];
+        delete config.responseMimeType;
       }
 
       const callPromise = ai.models.generateContent({
@@ -321,6 +325,11 @@ async function callGeminiWithFallbackModels(
   }
 
   throw lastError || new Error('All Gemini model endpoints were unavailable');
+}
+
+function parseGroundedJson(responseText: string): any {
+  const cleaned = responseText.replace(/^```json\s*/i, '').replace(/\s*```$/i, '').trim();
+  return JSON.parse(cleaned);
 }
 
 function ensureMinimumSpeechLength(speechText: string, topicName: string, minimumWords = 100): string {
@@ -577,7 +586,7 @@ app.post('/api/speech/generate', async (req, res) => {
             : '320 to 380 words';
 
         const prompt = `You are an expert Indian children's educational speech writer specializing in school morning assembly speeches.
-Generate an age-appropriate, factually verified, beautiful assembly speech.
+Search the live web before writing and generate an age-appropriate, factually verified assembly speech.
 
 Parameters:
 - Topic: "${resolvedEventTitle}"
@@ -608,6 +617,8 @@ Strict Content Rules:
   Paragraph 5: A brief hopeful summary and the exact closing: "Thank you and have a wonderful day ahead! Jai Hind!"
 10. Do not place the closing before the facts or lesson. Do not put teacher questions, sources, or metadata inside speechText.
 11. Make this speech clearly different from speeches about other topics. Every paragraph must use concrete details from the named subject, its person, place, achievement, tradition, or historical event. Never use generic filler when a topic-specific fact can be used.
+12. Use Google Search grounding for every factual claim. Prefer Government of India, ministry, official institution, museum, university, or recognized international organization sources. Do not guess, invent, or repeat unverified facts.
+13. Include the actual URLs and names of the web sources used in the sources array. The speech must be based on the current search results, not only on the supplied calendar description.
 
 Respond strictly in valid JSON format matching this schema:
 {
@@ -638,10 +649,17 @@ Respond strictly in valid JSON format matching this schema:
 
         const { text: responseText, modelUsed } = await callGeminiWithFallbackModels(ai, prompt, {
           timeoutMs: 8000,
-          jsonMode: true,
+          jsonMode: false,
+          useGoogleSearch: true,
         });
 
-        const parsed = JSON.parse(responseText);
+        const parsed = parseGroundedJson(responseText);
+        if (!Array.isArray(parsed.sources) || parsed.sources.length === 0) {
+          throw new Error('Grounded response did not include web sources');
+        }
+        if (!Array.isArray(parsed.threeKeyFacts) || parsed.threeKeyFacts.length < 3) {
+          throw new Error('Grounded response did not include three factual points');
+        }
         parsed.speechText = ensureMinimumSpeechLength(parsed.speechText || '', resolvedEventTitle);
         parsed.cleanText = parsed.speechText.replace(/\[.*?\]/g, '').trim();
 
@@ -694,9 +712,16 @@ Respond strictly in valid JSON format matching this schema:
         return res.json(speechResult);
       } catch (geminiError: any) {
         const msg = geminiError?.message || String(geminiError);
-        console.log(`[Gemini Notice] Model busy or unavailable (${msg.slice(0, 100)}...). Serving verified knowledge base speech.`);
+        console.log(`[Gemini Notice] Grounded web research failed (${msg.slice(0, 120)}...).`);
+        return res.status(503).json({
+          error: 'Live web research was unavailable. No unsourced speech was generated.',
+        });
       }
     }
+
+    return res.status(503).json({
+      error: 'Live web research is required to generate a fact-based speech.',
+    });
 
     // High quality dynamic fallback generation matching the requested topic
     const smartFallback = generateSmartFallbackSpeech({

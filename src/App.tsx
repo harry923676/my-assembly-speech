@@ -312,6 +312,9 @@ export default function App() {
       setActiveTab('home');
     } catch (err: any) {
       console.error('Speech generation error:', err);
+      setCurrentSpeech(null);
+      setErrorMsg('Live web research was unavailable. Please try again so the speech uses current, verified sources.');
+      return;
       // Client-side fallback from verified library
       const matchedFallback = FALLBACK_SPEECHES[event.title];
       const speechTopic = event.title;
@@ -513,6 +516,12 @@ export default function App() {
               isGenerating={isGenerating}
               selectedEventId={selectedEvent?.id}
             />
+
+            {errorMsg && (
+              <div className="bg-red-50 border border-red-200 text-red-800 rounded-2xl px-4 py-3 text-sm" role="alert">
+                {errorMsg}
+              </div>
+            )}
 
             {/* The Speech Content Display */}
             {isGenerating ? (
