@@ -441,6 +441,19 @@ function generateSmartFallbackSpeech(params: {
   const importance = matchedRecord?.importance || 'It inspires young students to be responsible and kind citizens.';
   const sourceName = matchedRecord?.source || 'National Portal of India';
   const sourceUrl = matchedRecord?.source_url || 'https://india.gov.in';
+  const category = matchedRecord?.category || eventCategory || 'National';
+  const categoryLower = category.toLowerCase();
+  const subjectAction = categoryLower.includes('environment')
+    ? 'save water, protect plants, reduce waste, and care for living things'
+    : categoryLower.includes('science') || categoryLower.includes('technology')
+    ? 'observe carefully, ask how things work, and use knowledge to solve problems'
+    : categoryLower.includes('festival') || categoryLower.includes('culture')
+    ? 'respect family traditions, learn from our regional heritage, and celebrate thoughtfully'
+    : categoryLower.includes('freedom') || categoryLower.includes('national') || categoryLower.includes('history')
+    ? 'respect the Constitution, serve our community, and protect the freedom others built for us'
+    : categoryLower.includes('sport')
+    ? 'practice regularly, play fairly, and care for our health'
+    : 'learn continuously, treat every person fairly, and turn good values into daily actions';
 
   let greeting = `Respected Principal, beloved teachers, and my dear friends. [Smile] A very warm and pleasant morning to all of you!`;
   if (childName) {
@@ -449,9 +462,9 @@ function generateSmartFallbackSpeech(params: {
 
   const para1 = `${greeting}\n\nToday, I stand before you with great excitement to speak on a special topic: ${topicName}${hindiName}. [Pause]`;
   const para2 = `In our country India, this day holds special significance because ${desc} ${importance}`;
-  const para3 = `Here are three important lessons connected with this topic. First, we learn about ${themes[0] || 'dedication and honesty'}. Second, we understand the importance of ${themes[1] || 'service and unity'}. Third, we remember that ${themes[2] || 'small actions can create positive change'}.`;
-  const para4 = `[Speak slowly] As students in ${classLevel}, we can practice these values by respecting our teachers, helping others, asking thoughtful questions, and doing our daily duties sincerely. Let us be curious, kind, disciplined, and proud citizens of India. [Smile]`;
-  const para5 = `This topic reminds us that every good action can inspire another person. Let us carry this lesson beyond the assembly and make our school and community better. Thank you and have a wonderful day ahead! Jai Hind!`;
+  const para3 = `Three subject-specific ideas make ${topicName} memorable. First, we learn about ${themes[0] || 'the central contribution connected with this topic'}. Second, ${topicName} shows us ${themes[1] || 'how people can create meaningful change'}. Third, its lasting message is ${themes[2] || 'that courage and responsibility matter in everyday life'}. These details help us understand the topic instead of only remembering its name.`;
+  const para4 = `[Speak slowly] As students in ${classLevel}, we can follow the lesson of ${topicName}: ${subjectAction}. We can connect this subject to our school life by asking thoughtful questions, helping others, and doing our daily duties sincerely. [Smile]`;
+  const para5 = `${topicName} is remembered because its message still matters to students today. Let us carry this subject-specific lesson beyond the assembly and share it through our actions. Thank you and have a wonderful day ahead! Jai Hind!`;
 
   const fullSpeech = ensureMinimumSpeechLength(`${para1}\n\n${para2}\n\n${para3}\n\n${para4}\n\n${para5}`, topicName);
   const cleanSpeech = fullSpeech.replace(/\[.*?\]/g, '').trim();
@@ -468,7 +481,7 @@ function generateSmartFallbackSpeech(params: {
       return {
         word: cleanW,
         pronunciation: pron,
-        meaning: `A key concept celebrating ${topicName}.`,
+        meaning: `A key concept connected with ${topicName}.`,
       };
     });
 
@@ -476,7 +489,7 @@ function generateSmartFallbackSpeech(params: {
     id: `smart-fallback-${Date.now()}`,
     eventId: eventId || 'smart-fallback',
     eventTitle: topicName,
-    eventCategory: (matchedRecord?.category || eventCategory || 'National') as any,
+    eventCategory: category as any,
     eventDate: eventDate || matchedRecord?.dateStr || new Date().toISOString().split('T')[0],
     classLevel: classLevel as any,
     language: language as any,
@@ -594,6 +607,7 @@ Strict Content Rules:
   Paragraph 4: Values learned and one practical action students can take.
   Paragraph 5: A brief hopeful summary and the exact closing: "Thank you and have a wonderful day ahead! Jai Hind!"
 10. Do not place the closing before the facts or lesson. Do not put teacher questions, sources, or metadata inside speechText.
+11. Make this speech clearly different from speeches about other topics. Every paragraph must use concrete details from the named subject, its person, place, achievement, tradition, or historical event. Never use generic filler when a topic-specific fact can be used.
 
 Respond strictly in valid JSON format matching this schema:
 {

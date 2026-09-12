@@ -316,12 +316,24 @@ export default function App() {
       const matchedFallback = FALLBACK_SPEECHES[event.title];
       const speechTopic = event.title;
       const speechDesc = event.description || `${speechTopic} is observed with great pride across India.`;
+      const category = event.category.toLowerCase();
+      const subjectAction = category.includes('environment')
+        ? 'save water, protect plants, and reduce waste'
+        : category.includes('science') || category.includes('technology')
+        ? 'observe carefully, ask questions, and use knowledge responsibly'
+        : category.includes('festival') || category.includes('culture')
+        ? 'respect traditions and learn from our shared heritage'
+        : category.includes('freedom') || category.includes('national') || category.includes('history')
+        ? 'respect our Constitution, serve others, and value our freedom'
+        : category.includes('sport')
+        ? 'practice regularly, play fairly, and care for our health'
+        : 'learn continuously, treat everyone fairly, and help our community';
       const greeting = activeProf.childName
         ? `Respected Principal, teachers, and my dear friends. [Smile] My name is ${activeProf.childName}, and today I am honored to speak on ${speechTopic}.`
         : `Respected Principal, teachers, and my dear friends. [Smile] Today I am very happy to speak before you on ${speechTopic}.`;
 
       const defaultText = ensureMinimumSpeechLength(
-        matchedFallback?.speechText || `${greeting}\n\n[Pause] In India, this special occasion reminds us that ${speechDesc}\n\n[Speak slowly] As young students, we learn the values of honesty, hard work, and love for our nation.\n\nThank you, and have a wonderful day ahead! Jai Hind!`,
+        matchedFallback?.speechText || `${greeting}\n\n[Pause] ${speechTopic} matters because ${speechDesc}\n\nThis subject teaches us about its unique contribution, history, and message for India. We remember its important details and the people, places, ideas, or traditions connected with it.\n\n[Speak slowly] As young students, we can honour ${speechTopic} by choosing to ${subjectAction}. We can connect this lesson to school by asking thoughtful questions and doing our duties sincerely.\n\nLet us carry the specific lesson of ${speechTopic} beyond this assembly and share it through our actions. Thank you and have a wonderful day ahead! Jai Hind!`,
         speechTopic,
       );
 
