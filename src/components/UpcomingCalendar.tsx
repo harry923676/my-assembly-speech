@@ -524,11 +524,21 @@ export const UpcomingCalendar: React.FC<UpcomingCalendarProps> = ({
       </div>
 
       {selectedDate && (
-        <section className="bg-white rounded-3xl border-2 border-amber-300 shadow-sm p-5 space-y-4">
+        <div
+          className="fixed inset-0 z-50 bg-stone-900/50 backdrop-blur-sm p-4 sm:p-6 flex items-center justify-center"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="selected-date-dialog-title"
+          onClick={() => setSelectedDate(null)}
+        >
+          <section
+            className="bg-white rounded-3xl border-2 border-amber-300 shadow-xl p-5 sm:p-6 space-y-4 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+            onClick={(event) => event.stopPropagation()}
+          >
           <div className="flex items-center justify-between gap-3 border-b border-stone-100 pb-3">
             <div>
               <p className="text-[11px] font-bold uppercase tracking-wider text-amber-700">Events on this date</p>
-              <h4 className="text-xl font-bold text-stone-900">{selectedDateLabel}</h4>
+              <h4 id="selected-date-dialog-title" className="text-xl font-bold text-stone-900">{selectedDateLabel}</h4>
             </div>
             <button type="button" onClick={() => setSelectedDate(null)} className="text-xs font-semibold text-stone-500 hover:text-stone-900 px-3 py-1.5 rounded-lg bg-stone-100 cursor-pointer">
               Close
@@ -575,7 +585,8 @@ export const UpcomingCalendar: React.FC<UpcomingCalendarProps> = ({
               );
             })}
           </div>
-        </section>
+          </section>
+        </div>
       )}
 
       {false && (<>
