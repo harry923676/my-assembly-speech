@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   IndianEvent,
   AssemblySpeech,
@@ -422,6 +422,18 @@ export default function App() {
     ? favorites.some((f) => f.id === currentSpeech.id || f.eventTitle === currentSpeech.eventTitle)
     : false;
 
+  const immediateRecommendation = useMemo(() => {
+    if (recommendedEvent) return recommendedEvent;
+    const now = new Date();
+    const istNow = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+    const todayStr = [
+      istNow.getFullYear(),
+      String(istNow.getMonth() + 1).padStart(2, '0'),
+      String(istNow.getDate()).padStart(2, '0'),
+    ].join('-');
+    return rankEventsForDate(todayStr, istNow.getFullYear()).recommended;
+  }, [recommendedEvent]);
+
   return (
     <div className="min-h-screen flex flex-col bg-amber-50/40 text-stone-800 font-sans selection:bg-amber-200">
       {/* Global Header with Live Internet Time Sync */}
@@ -465,7 +477,7 @@ export default function App() {
           <div className="space-y-8">
             {/* Top Spotlight: This Weekend's Speech Recommendation */}
             <WeekendSpeechCard
-              recommendedEvent={recommendedEvent}
+              recommendedEvent={immediateRecommendation}
               alternativeEvents={alternativeEvents}
               syncedTime={syncedTime}
               onSelectEvent={(ev) => generateSpeechForEvent(ev)}

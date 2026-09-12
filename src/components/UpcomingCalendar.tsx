@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { IndianEvent, ScoreBreakdown, ChildProfile, LanguageCode, SpeechDuration, ClassLevel } from '../types.ts';
+import { EventSymbol, getEventSymbol } from './EventSymbol.tsx';
 import {
   Search,
   Calendar as CalendarIcon,
@@ -510,9 +511,12 @@ export const UpcomingCalendar: React.FC<UpcomingCalendarProps> = ({
                     >
                       <span className="text-xs font-bold">{day}</span>
                       {hasEvents && (
-                        <span className={`absolute bottom-1 left-1.5 right-1.5 text-[9px] font-semibold truncate ${isSelected ? 'text-amber-100' : 'text-amber-800'}`}>
-                          {dateEvents.length} event{dateEvents.length > 1 ? 's' : ''}
-                        </span>
+                        <>
+                          <span className="absolute top-1 right-1 text-sm" aria-hidden="true">{getEventSymbol(dateEvents[0])}</span>
+                          <span className={`absolute bottom-1 left-1.5 right-1.5 text-[9px] font-semibold truncate ${isSelected ? 'text-amber-100' : 'text-amber-800'}`}>
+                            {dateEvents.length} event{dateEvents.length > 1 ? 's' : ''}
+                          </span>
+                        </>
                       )}
                     </button>
                   );
@@ -554,7 +558,7 @@ export const UpcomingCalendar: React.FC<UpcomingCalendarProps> = ({
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-lg">{item.categoryIcon || '🇮🇳'}</span>
+                        <EventSymbol event={item} size="sm" />
                         <span className="text-[11px] font-semibold text-stone-500">{item.category}</span>
                       </div>
                       <h5 className="font-bold text-stone-900">{item.title}</h5>

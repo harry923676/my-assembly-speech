@@ -1,5 +1,6 @@
 import React from 'react';
 import { IndianEvent, SyncedTimeData } from '../types.ts';
+import { EventSymbol } from './EventSymbol.tsx';
 import { Sparkles, Calendar, ArrowRight, Dices, Award, CheckCircle, Info } from 'lucide-react';
 
 interface WeekendSpeechCardProps {
@@ -29,8 +30,8 @@ export const WeekendSpeechCard: React.FC<WeekendSpeechCardProps> = ({
     <div className="bg-linear-to-br from-amber-500 via-orange-500 to-amber-600 rounded-3xl p-5 sm:p-7 text-white shadow-xl shadow-orange-500/15 relative overflow-hidden border border-amber-300/30">
       {/* Background soft pattern */}
       <div className="absolute -right-10 -bottom-10 w-60 h-60 rounded-full bg-white/10 blur-2xl pointer-events-none" />
-      <div className="absolute right-6 top-6 text-7xl opacity-20 select-none pointer-events-none">
-        {recommendedEvent.categoryIcon}
+      <div className="absolute right-6 top-6 opacity-30 select-none pointer-events-none">
+        <EventSymbol event={recommendedEvent} size="lg" />
       </div>
 
       {/* Top Header Badge */}
@@ -55,9 +56,12 @@ export const WeekendSpeechCard: React.FC<WeekendSpeechCardProps> = ({
 
       {/* Main Title & Description */}
       <div className="max-w-2xl relative z-10">
-        <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white drop-shadow-xs mb-1">
-          {recommendedEvent.title}
-        </h2>
+        <div className="flex items-center gap-3 mb-1">
+          <EventSymbol event={recommendedEvent} />
+          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white drop-shadow-xs">
+            {recommendedEvent.title}
+          </h2>
+        </div>
         {recommendedEvent.hindiTitle && (
           <p className="text-sm font-medium text-amber-100 mb-2">
             {recommendedEvent.hindiTitle}
