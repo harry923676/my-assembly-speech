@@ -1,4 +1,5 @@
 import { IndianEvent } from '../types.ts';
+import { WORKBOOK_EVENT_TEMPLATES } from './workbookEvents.ts';
 
 // Festival lunar/custom calendar lookup for multiple years (2024-2028)
 // This ensures festival dates are accurate and NOT hardcoded to a single static year.
@@ -1045,6 +1046,31 @@ export function getAllEventsForYear(year: number): IndianEvent[] {
         year,
       });
     }
+  });
+
+  // Include every unique annual topic from the master workbook without duplicating richer app entries.
+  const existingTitles = new Set(events.map((event) => event.title));
+  WORKBOOK_EVENT_TEMPLATES.forEach((item, index) => {
+    if (existingTitles.has(item.title)) return;
+
+    const [month, day] = item.dateTemplate.split('-').map(Number);
+    const monthStr = String(month).padStart(2, '0');
+    const dayStr = String(day).padStart(2, '0');
+    const dateStr = `${year}-${monthStr}-${dayStr}`;
+
+    events.push({
+      id: `workbook-${index}-${dateStr}`,
+      title: item.title,
+      category: item.category,
+      categoryIcon: item.categoryIcon,
+      dateStr,
+      dayAndMonth: `${day} ${monthNames[month - 1]}`,
+      year,
+      description: `A school assembly topic about ${item.title} and its importance for students in ${item.region}.`,
+      importance: item.importance,
+      sourceName: item.source,
+      score: 55,
+    });
   });
 
   // 2. Add dynamic festivals
