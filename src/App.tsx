@@ -210,16 +210,26 @@ export default function App() {
 
   // 2. Fetch upcoming events based on synced time and full 365-day master calendar
   const fetchUpcomingEvents = useCallback(async () => {
+    const now = new Date();
+    const istNow = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+    const todayStr = [
+      istNow.getFullYear(),
+      String(istNow.getMonth() + 1).padStart(2, '0'),
+      String(istNow.getDate()).padStart(2, '0'),
+    ].join('-');
+    const localRecommendation = rankEventsForDate(todayStr, istNow.getFullYear());
+
     try {
       let fallbackEvents: IndianEvent[] = [];
       const res = await fetch('/api/events/upcoming');
       if (res.ok) {
         const data = await res.json();
         fallbackEvents = data.allEvents || [];
-        setRecommendedEvent(data.recommended);
-        setAlternativeEvents(data.alternatives || []);
-        if (!selectedEvent && data.recommended) {
-          setSelectedEvent(data.recommended);
+        const recommendation = data.recommended || localRecommendation.recommended;
+        setRecommendedEvent(recommendation);
+        setAlternativeEvents(data.alternatives?.length ? data.alternatives : localRecommendation.alternatives || []);
+        if (!selectedEvent && recommendation) {
+          setSelectedEvent(recommendation);
         }
       }
 
@@ -227,17 +237,15 @@ export default function App() {
       if (allRes.ok) {
         const allData = await allRes.json();
         const fullEvents = Array.isArray(allData.events) ? allData.events : [];
-        setAllEvents(fullEvents.length > 0 ? fullEvents : fallbackEvents);
+        setAllEvents(fullEvents.length > 0 ? fullEvents : fallbackEvents.length > 0 ? fallbackEvents : localRecommendation.allScored || []);
       } else {
         // Keep the calendar populated if the optional full-calendar request is unavailable.
-        setAllEvents(fallbackEvents.length > 0 ? fallbackEvents : getAllEventsForYear(new Date().getFullYear()));
+        setAllEvents(fallbackEvents.length > 0 ? fallbackEvents : getAllEventsForYear(istNow.getFullYear()));
       }
     } catch (err) {
       console.warn('Could not fetch upcoming events from backend, using local ranked calendar:', err);
       try {
-        const now = new Date();
-        const todayStr = now.toISOString().split('T')[0];
-        const ranked = rankEventsForDate(todayStr, now.getFullYear());
+        const ranked = localRecommendation;
         setRecommendedEvent(ranked.recommended);
         setAlternativeEvents(ranked.alternatives || []);
         setAllEvents(ranked.allScored || []);
@@ -354,13 +362,6 @@ export default function App() {
       setIsGenerating(false);
     }
   };
-
-  // Auto-generate speech once recommended event is discovered on first load
-  useEffect(() => {
-    if (recommendedEvent && !currentSpeech && !isGenerating) {
-      generateSpeechForEvent(recommendedEvent);
-    }
-  }, [recommendedEvent]);
 
   // "Surprise Me" action
   const handleSurpriseMe = () => {
