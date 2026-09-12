@@ -129,6 +129,15 @@ export const BASE_INDIAN_EVENTS: Omit<IndianEvent, 'dateStr' | 'dayAndMonth' | '
     sourceName: 'Ministry of Women and Child Development, Govt of India',
   },
   {
+    title: 'National Voters’ Day',
+    hindiTitle: 'राष्ट्रीय मतदाता दिवस',
+    category: 'Education',
+    categoryIcon: '🗳️',
+    description: "Encourages every citizen to understand the power of voting, responsibility in democracy, and active participation in public life.",
+    importance: 'Teaches civic awareness, rights, and the importance of choosing leaders wisely.',
+    sourceName: 'Election Commission of India',
+  },
+  {
     title: 'Republic Day of India',
     hindiTitle: 'गणतंत्र दिवस',
     category: 'National',
@@ -147,6 +156,24 @@ export const BASE_INDIAN_EVENTS: Omit<IndianEvent, 'dateStr' | 'dayAndMonth' | '
     description: "Commemorates the 'Nightingale of India', a great poet, freedom fighter, and India's first woman governor.",
     importance: 'Teaches the power of words, poetry, and courage in public service.',
     sourceName: 'Sahitya Akademi / National Archives of India',
+  },
+  {
+    title: 'International Women’s Day',
+    hindiTitle: 'अंतर्राष्ट्रीय महिला दिवस',
+    category: 'Education',
+    categoryIcon: '👩‍🎓',
+    description: "Celebrates the achievements of women in all fields and reminds us to support equality, dignity, and equal opportunity for girls and women.",
+    importance: 'Teaches respect, fairness, and the idea that every child deserves equal opportunities.',
+    sourceName: 'United Nations / Ministry of Women and Child Development',
+  },
+  {
+    title: 'World Radio Day',
+    hindiTitle: 'विश्व रेडियो दिवस',
+    category: 'Education',
+    categoryIcon: '📻',
+    description: "Highlights the importance of radio as a powerful medium for education, communication, and connectivity in every community.",
+    importance: 'Teaches how information and awareness can reach people quickly and positively.',
+    sourceName: 'UNESCO',
   },
   {
     title: 'National Science Day',
@@ -186,6 +213,24 @@ export const BASE_INDIAN_EVENTS: Omit<IndianEvent, 'dateStr' | 'dayAndMonth' | '
     importance: 'Teaches conservation, never wasting tap water, and keeping water bodies clean.',
     sourceName: 'UNESCO / Ministry of Jal Shakti',
   },
+  {
+    title: 'World Wildlife Day',
+    hindiTitle: 'विश्व वन्यजीव दिवस',
+    category: 'Environment',
+    categoryIcon: '🦉',
+    description: "Focuses on the protection of biodiversity and the importance of wildlife conservation for a healthy planet.",
+    importance: 'Teaches compassion for animals, biodiversity, and the value of nature.',
+    sourceName: 'United Nations',
+  },
+  {
+    title: 'International Day of Happiness',
+    hindiTitle: 'अंतर्राष्ट्रीय प्रसन्नता दिवस',
+    category: 'Education',
+    categoryIcon: '😊',
+    description: "Encourages positive thinking, kindness, gratitude, and healthy emotional well-being in daily life.",
+    importance: 'Teaches that happiness grows through kindness, gratitude, and good habits.',
+    sourceName: 'United Nations',
+  },
 
   // April
   {
@@ -205,6 +250,15 @@ export const BASE_INDIAN_EVENTS: Omit<IndianEvent, 'dateStr' | 'dayAndMonth' | '
     description: "Reminds children to care for Mother Earth by planting trees, saving electricity, and avoiding plastic.",
     importance: 'Instills love for nature, plants, and animal protection.',
     sourceName: 'UN Environment Programme',
+  },
+  {
+    title: 'World Health Day',
+    hindiTitle: 'विश्व स्वास्थ्य दिवस',
+    category: 'Education',
+    categoryIcon: '🩺',
+    description: "Promotes healthy habits, physical fitness, safe living, and awareness about disease prevention.",
+    importance: 'Teaches hygiene, healthy food choices, and the importance of caring for our bodies.',
+    sourceName: 'World Health Organization',
   },
   {
     title: 'Odisha Day (Utkal Divas)',
@@ -263,6 +317,15 @@ export const BASE_INDIAN_EVENTS: Omit<IndianEvent, 'dateStr' | 'dayAndMonth' | '
     description: "Global day dedicated to planting trees, reducing waste, and protecting forests and clean air.",
     importance: 'Teaches children to plant saplings and avoid single-use plastics.',
     sourceName: 'Ministry of Environment, Forest and Climate Change',
+  },
+  {
+    title: 'World Day Against Child Labour',
+    hindiTitle: 'बालश्रम विरोधी दिवस',
+    category: 'Education',
+    categoryIcon: '🚫',
+    description: "Raises awareness about child labour and emphasizes that every child deserves education, safety, and a joyful childhood.",
+    importance: 'Teaches empathy, justice, and the right to a safe and learning-filled childhood.',
+    sourceName: 'International Labour Organization',
   },
   {
     title: 'International Day of Yoga',
@@ -379,6 +442,15 @@ export const BASE_INDIAN_EVENTS: Omit<IndianEvent, 'dateStr' | 'dayAndMonth' | '
     sourceName: 'Department of Official Language, Ministry of Home Affairs',
   },
   {
+    title: 'International Day of Peace',
+    hindiTitle: 'अंतर्राष्ट्रीय शांति दिवस',
+    category: 'National',
+    categoryIcon: '🤝',
+    description: "Promotes peace, understanding, and harmony among people, communities, and countries across the world.",
+    importance: 'Teaches kindness, problem-solving, and the value of living together peacefully.',
+    sourceName: 'United Nations',
+  },
+  {
     title: 'World Ozone Day & Nature Protection',
     hindiTitle: 'विश्व ओजोन दिवस',
     category: 'Environment',
@@ -424,6 +496,24 @@ export const BASE_INDIAN_EVENTS: Omit<IndianEvent, 'dateStr' | 'dayAndMonth' | '
     description: "Honors the 'Iron Man of India' Sardar Vallabhbhai Patel who united over 560 princely states into one India.",
     importance: 'Teaches unity, strength through cooperation, and standing together.',
     sourceName: 'Ministry of Home Affairs, Govt of India',
+  },
+  {
+    title: 'World Mental Health Day',
+    hindiTitle: 'विश्व मानसिक स्वास्थ्य दिवस',
+    category: 'Education',
+    categoryIcon: '🧠',
+    description: "Encourages awareness about emotional well-being, kindness, and seeking help when feeling stressed, anxious, or unhappy.",
+    importance: 'Teaches empathy, healthy habits, and the importance of speaking gently about feelings.',
+    sourceName: 'World Health Organization',
+  },
+  {
+    title: 'World Food Day',
+    hindiTitle: 'विश्व खाद्य दिवस',
+    category: 'Education',
+    categoryIcon: '🍲',
+    description: "Highlights the importance of food security, reducing hunger, and appreciating the effort behind every meal we eat.",
+    importance: 'Teaches gratitude for farmers, avoiding waste, and caring for all families.',
+    sourceName: 'Food and Agriculture Organization',
   },
 
   // November
@@ -517,6 +607,24 @@ export const BASE_INDIAN_EVENTS: Omit<IndianEvent, 'dateStr' | 'dayAndMonth' | '
     importance: 'Teaches the Preamble, justice, equality, liberty, and fundamental duties of citizens.',
     sourceName: 'Ministry of Law and Justice, Govt of India',
   },
+  {
+    title: 'International Day for the Elimination of Violence Against Women',
+    hindiTitle: 'महिलाओं के खिलाफ हिंसा उन्मूलन दिवस',
+    category: 'Education',
+    categoryIcon: '🚫',
+    description: "Calls attention to the need for safety, respect, equality, and dignity for women and girls everywhere.",
+    importance: 'Teaches kindness, respect, and the duty to stand up against unfair treatment.',
+    sourceName: 'United Nations',
+  },
+  {
+    title: 'World Diabetes Day',
+    hindiTitle: 'विश्व मधुमेह दिवस',
+    category: 'Education',
+    categoryIcon: '🩸',
+    description: "Raises awareness about diabetes prevention, healthy choices, and the importance of regular health check-ups.",
+    importance: 'Teaches healthy living, balance in food habits, and the importance of caring for the body.',
+    sourceName: 'World Health Organization',
+  },
 
   // December
   {
@@ -554,6 +662,24 @@ export const BASE_INDIAN_EVENTS: Omit<IndianEvent, 'dateStr' | 'dayAndMonth' | '
     description: "Celebrates the cultural heritage, natural beauty, and identity of Assam as an important part of India’s Northeast.",
     importance: 'Teaches appreciation for regional diversity, language, and the beauty of our country.',
     sourceName: 'Government of Assam',
+  },
+  {
+    title: 'World Human Rights Day',
+    hindiTitle: 'विश्व मानवाधिकार दिवस',
+    category: 'Education',
+    categoryIcon: '⚖️',
+    description: "Affirms the dignity, equality, and rights of every person and reminds us to treat all people with fairness and respect.",
+    importance: 'Teaches justice, empathy, and the responsibility to protect every human being’s rights.',
+    sourceName: 'United Nations',
+  },
+  {
+    title: 'National Consumer Day',
+    hindiTitle: 'राष्ट्रीय उपभोक्ता दिवस',
+    category: 'Education',
+    categoryIcon: '🛒',
+    description: "Promotes awareness about consumer rights, fair trade, quality products, and smart buying decisions.",
+    importance: 'Teaches responsible choices, honesty, and respect for consumer rights.',
+    sourceName: 'Ministry of Consumer Affairs, Govt of India',
   },
   {
     title: 'Kisan Diwas (National Farmers’ Day)',
@@ -645,19 +771,26 @@ export function getAllEventsForYear(year: number): IndianEvent[] {
     'Indian Army Day': { month: 1, day: 15 },
     'Netaji Subhas Chandra Bose Jayanti (Parakram Diwas)': { month: 1, day: 23 },
     'National Girl Child Day': { month: 1, day: 24 },
+    'National Voters’ Day': { month: 1, day: 25 },
     'Republic Day of India': { month: 1, day: 26 },
     'Sarojini Naidu Jayanti (National Women’s Day)': { month: 2, day: 13 },
+    'International Women’s Day': { month: 3, day: 8 },
+    'World Radio Day': { month: 2, day: 13 },
     'National Science Day': { month: 2, day: 28 },
+    'World Wildlife Day': { month: 3, day: 3 },
     'National Engineers’ Day (Sir M. Visvesvaraya)': { month: 9, day: 15 },
     'Shaheed Diwas (Bhagat Singh, Sukhdev & Rajguru)': { month: 3, day: 23 },
     'World Water Day': { month: 3, day: 22 },
+    'International Day of Happiness': { month: 3, day: 20 },
     'Dr. B. R. Ambedkar Jayanti (Equality Day)': { month: 4, day: 14 },
     'World Earth Day': { month: 4, day: 22 },
+    'World Health Day': { month: 4, day: 7 },
     'Odisha Day (Utkal Divas)': { month: 4, day: 1 },
     'National Technology Day': { month: 5, day: 11 },
     'Maharashtra Day': { month: 5, day: 1 },
     'Gujarat Day': { month: 5, day: 1 },
     'Rabindranath Tagore Jayanti': { month: 5, day: 7 },
+    'World Day Against Child Labour': { month: 6, day: 12 },
     'World Population Day': { month: 7, day: 11 },
     'World Environment Day': { month: 6, day: 5 },
     'International Day of Yoga': { month: 6, day: 21 },
@@ -669,11 +802,14 @@ export function getAllEventsForYear(year: number): IndianEvent[] {
     'National Space Day': { month: 8, day: 23 },
     'National Sports Day (Major Dhyan Chand Jayanti)': { month: 8, day: 29 },
     'National Teachers’ Day': { month: 9, day: 5 },
+    'International Day of Peace': { month: 9, day: 21 },
     'World Literacy Day': { month: 9, day: 8 },
     'Hindi Diwas': { month: 9, day: 14 },
     'World Ozone Day & Nature Protection': { month: 9, day: 16 },
     'Bhagat Singh Jayanti': { month: 9, day: 28 },
     'Mahatma Gandhi Jayanti & Lal Bahadur Shastri Jayanti': { month: 10, day: 2 },
+    'World Mental Health Day': { month: 10, day: 10 },
+    'World Food Day': { month: 10, day: 16 },
     'Dr. A. P. J. Abdul Kalam Jayanti (World Students’ Day)': { month: 10, day: 15 },
     'National Unity Day (Rashtriya Ekta Diwas - Sardar Patel)': { month: 10, day: 31 },
     'Birsa Munda Jayanti': { month: 11, day: 15 },
@@ -683,12 +819,16 @@ export function getAllEventsForYear(year: number): IndianEvent[] {
     'Tamil Nadu Day': { month: 11, day: 1 },
     'Andhra Pradesh Formation Day': { month: 11, day: 1 },
     'Chhattisgarh Foundation Day': { month: 11, day: 1 },
+    'International Day for the Elimination of Violence Against Women': { month: 11, day: 25 },
+    'World Diabetes Day': { month: 11, day: 14 },
     'National Education Day (Maulana Abul Kalam Azad)': { month: 11, day: 11 },
     'National Children’s Day (Bal Diwas - Chacha Nehru)': { month: 11, day: 14 },
     'Constitution Day of India (Samvidhan Diwas)': { month: 11, day: 26 },
     'Indian Navy Day': { month: 12, day: 4 },
     'World AIDS Day': { month: 12, day: 1 },
     'Assam Foundation Day': { month: 12, day: 2 },
+    'World Human Rights Day': { month: 12, day: 10 },
+    'National Consumer Day': { month: 12, day: 24 },
     'National Mathematics Day (Srinivasa Ramanujan)': { month: 12, day: 22 },
     'Kisan Diwas (National Farmers’ Day)': { month: 12, day: 23 },
   };
@@ -903,7 +1043,23 @@ export function rankEventsForDate(currentDateStr: string, year: number = new Dat
 
   // Top candidate
   const recommended = scoredEvents[0] || EVERGREEN_TOPICS[0];
-  const alternatives = scoredEvents.slice(1, 4);
+  let alternatives = scoredEvents.slice(1, 6);
+
+  if (alternatives.length < 5) {
+    const fallbackIds = new Set(alternatives.map((item) => item.id));
+    for (const evergreen of EVERGREEN_TOPICS) {
+      if (alternatives.length >= 5) break;
+      if (!fallbackIds.has(evergreen.id)) {
+        alternatives.push({
+          ...evergreen,
+          score: evergreen.score ?? 80,
+          proximityDays: 99,
+          isCurrentOrUpcoming: true,
+        });
+        fallbackIds.add(evergreen.id);
+      }
+    }
+  }
 
   return {
     recommended,
