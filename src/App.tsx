@@ -20,7 +20,7 @@ import { ProfileSettings } from './components/ProfileSettings.tsx';
 import { SavedSpeeches } from './components/SavedSpeeches.tsx';
 import { PrintView } from './components/PrintView.tsx';
 import { FALLBACK_SPEECHES } from './data/fallbackSpeeches.ts';
-import { rankEventsForDate } from './data/indianEvents.ts';
+import { getAllEventsForYear, rankEventsForDate } from './data/indianEvents.ts';
 import { Sparkles, Calendar, Mic, Wifi, ShieldAlert, AlertCircle, RefreshCw } from 'lucide-react';
 
 export default function App() {
@@ -226,10 +226,11 @@ export default function App() {
       const allRes = await fetch('/api/events/all');
       if (allRes.ok) {
         const allData = await allRes.json();
-        setAllEvents(allData.events || []);
+        const fullEvents = Array.isArray(allData.events) ? allData.events : [];
+        setAllEvents(fullEvents.length > 0 ? fullEvents : fallbackEvents);
       } else {
         // Keep the calendar populated if the optional full-calendar request is unavailable.
-        setAllEvents(fallbackEvents);
+        setAllEvents(fallbackEvents.length > 0 ? fallbackEvents : getAllEventsForYear(new Date().getFullYear()));
       }
     } catch (err) {
       console.warn('Could not fetch upcoming events from backend, using local ranked calendar:', err);
@@ -561,7 +562,6 @@ export default function App() {
         />
       )}
 
-      {/* Global Footer with Pawan Paji Developer Stamp */}
       <Footer syncedTime={syncedTime} />
     </div>
   );

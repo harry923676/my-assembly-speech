@@ -91,14 +91,9 @@ export const PrintView: React.FC<PrintViewProps> = ({ speech, onClose }) => {
           </div>
         )}
 
-        {/* Footer Stamp on Print */}
-        <div className="pt-4 border-t-2 border-stone-800 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-2">
+        <div className="pt-4 border-t-2 border-stone-800 text-xs text-stone-500">
           <div className="font-bold text-stone-800">
             Good Luck! Stand straight, smile, and speak with confidence! 🌟
-          </div>
-          <div className="flex items-center gap-1 font-medium text-stone-700">
-            <span>Developer Stamp:</span>
-            <span className="font-bold text-amber-800">Pawan Paji</span>
           </div>
         </div>
       </div>
