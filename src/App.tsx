@@ -166,6 +166,58 @@ export default function App() {
     });
   }, []);
 
+  useEffect(() => {
+    const liveClockInterval = setInterval(() => {
+      setSyncedTime((previous) => {
+        if (!previous) return previous;
+
+        const now = new Date();
+        const istNow = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+        const day = istNow.getDay();
+        const daysUntilSaturday = (6 - day + 7) % 7 || 7;
+        const nextSat = new Date(istNow.getTime() + daysUntilSaturday * 24 * 60 * 60 * 1000);
+        const nextSatDisplay = nextSat.toLocaleDateString('en-IN', {
+          timeZone: 'Asia/Kolkata',
+          weekday: 'short',
+          day: 'numeric',
+          month: 'short',
+        });
+
+        return {
+          ...previous,
+          iso: istNow.toISOString(),
+          dateStr: istNow.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }),
+          displayDate: istNow.toLocaleDateString('en-IN', {
+            timeZone: 'Asia/Kolkata',
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          }),
+          timeStr:
+            istNow.toLocaleTimeString('en-IN', {
+              timeZone: 'Asia/Kolkata',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+              hour12: true,
+            }) + ' IST',
+          dayName: istNow.toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', weekday: 'long' }),
+          dayOfWeek: day,
+          nextWeekendAssembly: {
+            ...previous.nextWeekendAssembly,
+            dateStr: nextSat.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }),
+            displayDate: nextSatDisplay,
+            daysRemaining: daysUntilSaturday,
+          },
+          syncedAt: Date.now(),
+        };
+      });
+    }, 1000);
+
+    return () => clearInterval(liveClockInterval);
+  }, []);
+
   // 2. Fetch upcoming events based on synced time
   const fetchUpcomingEvents = useCallback(async () => {
     try {

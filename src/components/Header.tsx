@@ -101,11 +101,11 @@ export const Header: React.FC<HeaderProps> = ({
               <Wifi className="w-3.5 h-3.5 inline" />
               Live Internet Time Synced:
             </span>
-            <span className="bg-white/20 px-2 py-0.5 rounded-md font-mono font-medium">
+            <span className="bg-white/20 px-2 py-0.5 rounded-md font-mono font-medium animate-pulse">
               {syncedTime ? syncedTime.displayDate : 'Syncing time...'}
             </span>
             {syncedTime && (
-              <span className="bg-amber-900/40 px-2 py-0.5 rounded-md font-mono hidden sm:inline text-amber-100">
+              <span className="bg-amber-900/40 px-2 py-0.5 rounded-md font-mono hidden sm:inline text-amber-100 animate-pulse">
                 {syncedTime.timeStr}
               </span>
             )}
