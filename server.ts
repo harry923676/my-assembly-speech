@@ -283,8 +283,8 @@ async function callGeminiWithFallbackModels(
   prompt: string,
   options?: { jsonMode?: boolean; timeoutMs?: number; useGoogleSearch?: boolean }
 ): Promise<{ text: string; modelUsed: string }> {
-  // Primary model 'gemini-3.8-flash', and candidate 'gemini-flash-latest' if 503/high-demand
-  const modelsToTry = ['gemini-3.8-flash', 'gemini-flash-latest'];
+  // Use stable public Gemini models for grounded generation.
+  const modelsToTry = ['gemini-2.5-flash', 'gemini-2.5-flash-lite'];
   const timeoutMs = options?.timeoutMs || 8000;
 
   let lastError: any = null;
