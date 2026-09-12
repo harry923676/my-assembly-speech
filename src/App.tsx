@@ -25,9 +25,15 @@ import { Sparkles, Calendar, Mic, Wifi, ShieldAlert, AlertCircle, RefreshCw } fr
 
 function ensureMinimumSpeechLength(speechText: string, topicName: string, minimumWords = 100): string {
   const cleanText = speechText.replace(/\[.*?\]/g, '').trim();
-  if (cleanText.split(/\s+/).filter(Boolean).length >= minimumWords) return speechText;
+  let result = speechText;
+  if (cleanText.split(/\s+/).filter(Boolean).length < minimumWords) {
+    result = `${speechText}\n\nAs students, we can connect this topic to our daily lives. We can learn by asking questions, helping others, respecting our community, and practicing good habits every day. The story behind ${topicName} reminds us that progress begins with small actions. Let us share this lesson with our family and friends, work together with kindness, and use our knowledge responsibly. When we remember important events and people, we also understand how their choices shaped our country and continue to inspire young citizens today.`;
+  }
 
-  return `${speechText}\n\nAs students, we can connect this topic to our daily lives. We can learn by asking questions, helping others, respecting our community, and practicing good habits every day. The story behind ${topicName} reminds us that progress begins with small actions. Let us share this lesson with our family and friends, work together with kindness, and use our knowledge responsibly. When we remember important events and people, we also understand how their choices shaped our country and continue to inspire young citizens today.`;
+  const withoutClosing = result
+    .replace(/Thank you(?:,| and)?\s+have a wonderful day(?: ahead)?[.!]?\s*Jai Hind!?/gi, '')
+    .trim();
+  return `${withoutClosing}\n\nThank you and have a wonderful day ahead! Jai Hind!`;
 }
 
 export default function App() {
