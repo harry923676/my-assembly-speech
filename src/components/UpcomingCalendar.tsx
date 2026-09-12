@@ -227,12 +227,16 @@ export const UpcomingCalendar: React.FC<UpcomingCalendarProps> = ({
     });
   }, [events, searchQuery, selectedQuarter, selectedMonth, selectedCategory, selectedTier]);
 
-  const calendarYear = new Date().getFullYear();
+  const calendarYear = useMemo(() => {
+    const datedEvent = events.find((event) => /^\d{4}-\d{2}-\d{2}$/.test(event.dateStr));
+    return datedEvent ? Number(datedEvent.dateStr.slice(0, 4)) : new Date().getFullYear();
+  }, [events]);
   const eventsByDate = useMemo(() => {
     const grouped: Record<string, IndianEvent[]> = {};
     filteredEvents.forEach((event) => {
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(event.dateStr)) return;
-      grouped[event.dateStr] = [...(grouped[event.dateStr] || []), event];
+      const eventDate = event.dateStr || (event as IndianEvent & { actual_date?: string }).actual_date || '';
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(eventDate)) return;
+      grouped[eventDate] = [...(grouped[eventDate] || []), event];
     });
     Object.values(grouped).forEach((dateEvents) => {
       dateEvents.sort((a, b) => a.title.localeCompare(b.title));

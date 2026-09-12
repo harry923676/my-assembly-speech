@@ -211,9 +211,11 @@ export default function App() {
   // 2. Fetch upcoming events based on synced time and full 365-day master calendar
   const fetchUpcomingEvents = useCallback(async () => {
     try {
+      let fallbackEvents: IndianEvent[] = [];
       const res = await fetch('/api/events/upcoming');
       if (res.ok) {
         const data = await res.json();
+        fallbackEvents = data.allEvents || [];
         setRecommendedEvent(data.recommended);
         setAlternativeEvents(data.alternatives || []);
         if (!selectedEvent && data.recommended) {
@@ -225,6 +227,9 @@ export default function App() {
       if (allRes.ok) {
         const allData = await allRes.json();
         setAllEvents(allData.events || []);
+      } else {
+        // Keep the calendar populated if the optional full-calendar request is unavailable.
+        setAllEvents(fallbackEvents);
       }
     } catch (err) {
       console.warn('Could not fetch upcoming events from backend, using local ranked calendar:', err);
