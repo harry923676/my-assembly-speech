@@ -118,8 +118,9 @@ export default function App() {
 
     // Client-side IST fallback
     const now = new Date();
-    const istStr = now.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
-    const displayDate = now.toLocaleDateString('en-IN', {
+    const istNow = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+    const istStr = istNow.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+    const displayDate = istNow.toLocaleDateString('en-IN', {
       timeZone: 'Asia/Kolkata',
       weekday: 'long',
       day: 'numeric',
@@ -127,16 +128,16 @@ export default function App() {
       year: 'numeric',
     });
     const timeStr =
-      now.toLocaleTimeString('en-IN', {
+      istNow.toLocaleTimeString('en-IN', {
         timeZone: 'Asia/Kolkata',
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
         hour12: true,
       }) + ' IST';
-    const day = now.getDay();
+    const day = istNow.getDay();
     const daysUntilSaturday = (6 - day + 7) % 7 || 7;
-    const nextSat = new Date(now.getTime() + daysUntilSaturday * 24 * 60 * 60 * 1000);
+    const nextSat = new Date(istNow.getTime() + daysUntilSaturday * 24 * 60 * 60 * 1000);
     const nextSatStr = nextSat.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
     const nextSatDisplay = nextSat.toLocaleDateString('en-IN', {
       timeZone: 'Asia/Kolkata',
@@ -146,11 +147,11 @@ export default function App() {
     });
 
     setSyncedTime({
-      iso: now.toISOString(),
+      iso: istNow.toISOString(),
       dateStr: istStr,
       displayDate,
       timeStr,
-      dayName: now.toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', weekday: 'long' }),
+      dayName: istNow.toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', weekday: 'long' }),
       dayOfWeek: day,
       timezone: 'Asia/Kolkata (IST, UTC+5:30)',
       nextWeekendAssembly: {
@@ -198,10 +199,17 @@ export default function App() {
     }
   }, [selectedEvent]);
 
-  // Initial load
+  // Initial load and periodic live refresh
   useEffect(() => {
     fetchInternetTime(false);
     fetchUpcomingEvents();
+
+    const liveRefreshTimer = setInterval(() => {
+      fetchInternetTime(true);
+      fetchUpcomingEvents();
+    }, 60 * 1000);
+
+    return () => clearInterval(liveRefreshTimer);
   }, [fetchInternetTime, fetchUpcomingEvents]);
 
   // 3. Generate Speech API caller
