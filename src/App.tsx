@@ -23,6 +23,13 @@ import { FALLBACK_SPEECHES } from './data/fallbackSpeeches.ts';
 import { getAllEventsForYear, rankEventsForDate } from './data/indianEvents.ts';
 import { Sparkles, Calendar, Mic, Wifi, ShieldAlert, AlertCircle, RefreshCw } from 'lucide-react';
 
+function ensureMinimumSpeechLength(speechText: string, topicName: string, minimumWords = 100): string {
+  const cleanText = speechText.replace(/\[.*?\]/g, '').trim();
+  if (cleanText.split(/\s+/).filter(Boolean).length >= minimumWords) return speechText;
+
+  return `${speechText}\n\nAs students, we can connect this topic to our daily lives. We can learn by asking questions, helping others, respecting our community, and practicing good habits every day. The story behind ${topicName} reminds us that progress begins with small actions. Let us share this lesson with our family and friends, work together with kindness, and use our knowledge responsibly. When we remember important events and people, we also understand how their choices shaped our country and continue to inspire young citizens today.`;
+}
+
 export default function App() {
   // Navigation & View State
   const [activeTab, setActiveTab] = useState<'home' | 'calendar' | 'favorites' | 'practice' | 'profile'>('home');
@@ -307,10 +314,13 @@ export default function App() {
         ? `Respected Principal, teachers, and my dear friends. [Smile] My name is ${activeProf.childName}, and today I am honored to speak on ${speechTopic}.`
         : `Respected Principal, teachers, and my dear friends. [Smile] Today I am very happy to speak before you on ${speechTopic}.`;
 
-      const defaultText = matchedFallback?.speechText || `${greeting}\n\n[Pause] In India, this special occasion reminds us that ${speechDesc}\n\n[Speak slowly] As young students, we learn the values of honesty, hard work, and love for our nation.\n\nThank you, and have a wonderful day ahead! Jai Hind!`;
+      const defaultText = ensureMinimumSpeechLength(
+        matchedFallback?.speechText || `${greeting}\n\n[Pause] In India, this special occasion reminds us that ${speechDesc}\n\n[Speak slowly] As young students, we learn the values of honesty, hard work, and love for our nation.\n\nThank you, and have a wonderful day ahead! Jai Hind!`,
+        speechTopic,
+      );
 
       const cleanText = defaultText.replace(/\[.*?\]/g, '').trim();
-      const wordCount = matchedFallback?.wordCount || cleanText.split(/\s+/).length;
+      const wordCount = cleanText.split(/\s+/).filter(Boolean).length;
 
       const defaultSpeech: AssemblySpeech = {
         id: `local-fallback-${Date.now()}`,
