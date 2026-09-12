@@ -441,11 +441,13 @@ function generateSmartFallbackSpeech(params: {
     greeting = `Respected Principal, teachers, and my dear friends. [Smile] My name is ${childName}, studying in ${classLevel}${schoolName ? ` at ${schoolName}` : ''}, and today I am honored to speak before you.`;
   }
 
-  const para1 = `${greeting}\n\nToday, I stand before you with great excitement to speak on a special topic: ${topicName}${hindiName}. [Pause] In our country India, this day holds special significance because ${desc}`;
-  const para2 = `Dear friends, ${importance} [Speak slowly] As students in ${classLevel}, we learn from this day that ${themes[0] || 'dedication and honesty'} help us grow into good citizens. Every great milestone starts with our everyday habits at school.`;
-  const para3 = `Let us always strive to be curious, respect our teachers, care for our environment, and take pride in our nation. [Smile]\n\nThank you, and have an inspiring day ahead! Jai Hind!`;
+  const para1 = `${greeting}\n\nToday, I stand before you with great excitement to speak on a special topic: ${topicName}${hindiName}. [Pause]`;
+  const para2 = `In our country India, this day holds special significance because ${desc} ${importance}`;
+  const para3 = `Here are three important lessons connected with this topic. First, we learn about ${themes[0] || 'dedication and honesty'}. Second, we understand the importance of ${themes[1] || 'service and unity'}. Third, we remember that ${themes[2] || 'small actions can create positive change'}.`;
+  const para4 = `[Speak slowly] As students in ${classLevel}, we can practice these values by respecting our teachers, helping others, asking thoughtful questions, and doing our daily duties sincerely. Let us be curious, kind, disciplined, and proud citizens of India. [Smile]`;
+  const para5 = `This topic reminds us that every good action can inspire another person. Let us carry this lesson beyond the assembly and make our school and community better. Thank you and have a wonderful day ahead! Jai Hind!`;
 
-  const fullSpeech = ensureMinimumSpeechLength(`${para1}\n\n${para2}\n\n${para3}`, topicName);
+  const fullSpeech = ensureMinimumSpeechLength(`${para1}\n\n${para2}\n\n${para3}\n\n${para4}\n\n${para5}`, topicName);
   const cleanSpeech = fullSpeech.replace(/\[.*?\]/g, '').trim();
   const words = cleanSpeech.split(/\s+/).length;
 
@@ -579,6 +581,13 @@ Strict Content Rules:
 6. Closing: "Thank you and have a wonderful day ahead! Jai Hind!"
 7. Provide syllable pronunciation breakdowns for difficult words (e.g., "Sarvepalli Radhakrishnan" -> "Sar-vay-pal-lee Rad-ha-krish-nan").
 8. Provide 3 key facts to remember and 2-3 anticipated questions a teacher might ask with simple answers.
+9. Arrange speechText in exactly this paragraph order, with a blank line between paragraphs:
+  Paragraph 1: Greeting, speaker introduction, and topic introduction.
+  Paragraph 2: Background and why this event or person is important in India.
+  Paragraph 3: Three accurate facts or examples connected to the topic.
+  Paragraph 4: Values learned and one practical action students can take.
+  Paragraph 5: A brief hopeful summary and the exact closing: "Thank you and have a wonderful day ahead! Jai Hind!"
+10. Do not place the closing before the facts or lesson. Do not put teacher questions, sources, or metadata inside speechText.
 
 Respond strictly in valid JSON format matching this schema:
 {
