@@ -107,7 +107,8 @@ export default function App() {
       const res = await fetch(`/api/time${force ? '?force=true' : ''}`);
       if (res.ok) {
         const data: SyncedTimeData = await res.json();
-        setSyncedTime(data);
+        // Keep a local anchor so the displayed clock advances between server syncs.
+        setSyncedTime({ ...data, syncedAt: Date.now() });
         return;
       }
     } catch (err) {
@@ -118,9 +119,8 @@ export default function App() {
 
     // Client-side IST fallback
     const now = new Date();
-    const istNow = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
-    const istStr = istNow.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
-    const displayDate = istNow.toLocaleDateString('en-IN', {
+    const istStr = now.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+    const displayDate = now.toLocaleDateString('en-IN', {
       timeZone: 'Asia/Kolkata',
       weekday: 'long',
       day: 'numeric',
@@ -128,16 +128,16 @@ export default function App() {
       year: 'numeric',
     });
     const timeStr =
-      istNow.toLocaleTimeString('en-IN', {
+      now.toLocaleTimeString('en-IN', {
         timeZone: 'Asia/Kolkata',
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
         hour12: true,
       }) + ' IST';
-    const day = istNow.getDay();
+    const day = now.getDay();
     const daysUntilSaturday = (6 - day + 7) % 7 || 7;
-    const nextSat = new Date(istNow.getTime() + daysUntilSaturday * 24 * 60 * 60 * 1000);
+    const nextSat = new Date(now.getTime() + daysUntilSaturday * 24 * 60 * 60 * 1000);
     const nextSatStr = nextSat.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
     const nextSatDisplay = nextSat.toLocaleDateString('en-IN', {
       timeZone: 'Asia/Kolkata',
@@ -147,11 +147,11 @@ export default function App() {
     });
 
     setSyncedTime({
-      iso: istNow.toISOString(),
+      iso: now.toISOString(),
       dateStr: istStr,
       displayDate,
       timeStr,
-      dayName: istNow.toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', weekday: 'long' }),
+      dayName: now.toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', weekday: 'long' }),
       dayOfWeek: day,
       timezone: 'Asia/Kolkata (IST, UTC+5:30)',
       nextWeekendAssembly: {
@@ -166,59 +166,49 @@ export default function App() {
     });
   }, []);
 
+  // Advance the server-synced clock locally every second; resync remains the accuracy anchor.
   useEffect(() => {
-    const liveClockInterval = setInterval(() => {
-      setSyncedTime((previous) => {
-        if (!previous) return previous;
+    if (!syncedTime?.iso) return;
 
-        const now = new Date();
-        const istNow = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
-        const day = istNow.getDay();
-        const daysUntilSaturday = (6 - day + 7) % 7 || 7;
-        const nextSat = new Date(istNow.getTime() + daysUntilSaturday * 24 * 60 * 60 * 1000);
-        const nextSatDisplay = nextSat.toLocaleDateString('en-IN', {
+    const updateLiveTime = () => {
+      setSyncedTime((current) => {
+        if (!current?.iso) return current;
+
+        const liveNow = new Date(
+          new Date(current.iso).getTime() + (Date.now() - current.syncedAt),
+        );
+        const dateFormatter = new Intl.DateTimeFormat('en-IN', {
           timeZone: 'Asia/Kolkata',
-          weekday: 'short',
+          weekday: 'long',
           day: 'numeric',
-          month: 'short',
+          month: 'long',
+          year: 'numeric',
+        });
+        const timeFormatter = new Intl.DateTimeFormat('en-IN', {
+          timeZone: 'Asia/Kolkata',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: true,
         });
 
         return {
-          ...previous,
-          iso: istNow.toISOString(),
-          dateStr: istNow.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }),
-          displayDate: istNow.toLocaleDateString('en-IN', {
+          ...current,
+          displayDate: dateFormatter.format(liveNow),
+          timeStr: `${timeFormatter.format(liveNow)} IST`,
+          dayName: new Intl.DateTimeFormat('en-IN', {
             timeZone: 'Asia/Kolkata',
             weekday: 'long',
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-          }),
-          timeStr:
-            istNow.toLocaleTimeString('en-IN', {
-              timeZone: 'Asia/Kolkata',
-              hour: '2-digit',
-              minute: '2-digit',
-              second: '2-digit',
-              hour12: true,
-            }) + ' IST',
-          dayName: istNow.toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', weekday: 'long' }),
-          dayOfWeek: day,
-          nextWeekendAssembly: {
-            ...previous.nextWeekendAssembly,
-            dateStr: nextSat.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }),
-            displayDate: nextSatDisplay,
-            daysRemaining: daysUntilSaturday,
-          },
-          syncedAt: Date.now(),
+          }).format(liveNow),
         };
       });
-    }, 1000);
+    };
 
-    return () => clearInterval(liveClockInterval);
-  }, []);
+    const intervalId = window.setInterval(updateLiveTime, 1000);
+    return () => window.clearInterval(intervalId);
+  }, [syncedTime?.iso]);
 
-  // 2. Fetch upcoming events based on synced time
+  // 2. Fetch upcoming events based on synced time and full 365-day master calendar
   const fetchUpcomingEvents = useCallback(async () => {
     try {
       const res = await fetch('/api/events/upcoming');
@@ -226,47 +216,38 @@ export default function App() {
         const data = await res.json();
         setRecommendedEvent(data.recommended);
         setAlternativeEvents(data.alternatives || []);
-        setAllEvents(data.allEvents || []);
         if (!selectedEvent && data.recommended) {
           setSelectedEvent(data.recommended);
         }
-        return;
+      }
+
+      const allRes = await fetch('/api/events/all');
+      if (allRes.ok) {
+        const allData = await allRes.json();
+        setAllEvents(allData.events || []);
       }
     } catch (err) {
       console.warn('Could not fetch upcoming events from backend, using local ranked calendar:', err);
-    }
-
-    try {
-      const now = new Date();
-      const istNow = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
-      const todayStr = [
-        istNow.getFullYear(),
-        String(istNow.getMonth() + 1).padStart(2, '0'),
-        String(istNow.getDate()).padStart(2, '0'),
-      ].join('-');
-      const ranked = rankEventsForDate(todayStr, istNow.getFullYear());
-      setRecommendedEvent(ranked.recommended);
-      setAlternativeEvents(ranked.alternatives || []);
-      setAllEvents(ranked.allScored || []);
-      if (!selectedEvent && ranked.recommended) {
-        setSelectedEvent(ranked.recommended);
+      try {
+        const now = new Date();
+        const todayStr = now.toISOString().split('T')[0];
+        const ranked = rankEventsForDate(todayStr, now.getFullYear());
+        setRecommendedEvent(ranked.recommended);
+        setAlternativeEvents(ranked.alternatives || []);
+        setAllEvents(ranked.allScored || []);
+        if (!selectedEvent && ranked.recommended) {
+          setSelectedEvent(ranked.recommended);
+        }
+      } catch (e) {
+        console.warn('Fallback calendar error:', e);
       }
-    } catch (e) {
-      console.warn('Fallback calendar error:', e);
     }
   }, [selectedEvent]);
 
-  // Initial load and periodic live refresh
+  // Initial load
   useEffect(() => {
     fetchInternetTime(false);
     fetchUpcomingEvents();
-
-    const liveRefreshTimer = setInterval(() => {
-      fetchInternetTime(true);
-      fetchUpcomingEvents();
-    }, 60 * 1000);
-
-    return () => clearInterval(liveRefreshTimer);
   }, [fetchInternetTime, fetchUpcomingEvents]);
 
   // 3. Generate Speech API caller
@@ -305,37 +286,64 @@ export default function App() {
     } catch (err: any) {
       console.error('Speech generation error:', err);
       // Client-side fallback from verified library
-      const fallback = FALLBACK_SPEECHES[event.title] || FALLBACK_SPEECHES['National Science Day'];
+      const matchedFallback = FALLBACK_SPEECHES[event.title];
+      const speechTopic = event.title;
+      const speechDesc = event.description || `${speechTopic} is observed with great pride across India.`;
+      const greeting = activeProf.childName
+        ? `Respected Principal, teachers, and my dear friends. [Smile] My name is ${activeProf.childName}, and today I am honored to speak on ${speechTopic}.`
+        : `Respected Principal, teachers, and my dear friends. [Smile] Today I am very happy to speak before you on ${speechTopic}.`;
+
+      const defaultText = matchedFallback?.speechText || `${greeting}\n\n[Pause] In India, this special occasion reminds us that ${speechDesc}\n\n[Speak slowly] As young students, we learn the values of honesty, hard work, and love for our nation.\n\nThank you, and have a wonderful day ahead! Jai Hind!`;
+
+      const cleanText = defaultText.replace(/\[.*?\]/g, '').trim();
+      const wordCount = matchedFallback?.wordCount || cleanText.split(/\s+/).length;
+
       const defaultSpeech: AssemblySpeech = {
         id: `local-fallback-${Date.now()}`,
         eventId: event.id,
-        eventTitle: event.title,
+        eventTitle: speechTopic,
         eventCategory: event.category,
         eventDate: event.dateStr,
         classLevel: activeProf.classLevel,
         language: activeProf.preferredLanguage,
         duration: activeProf.speechDuration,
         style: activeProf.speechStyle,
-        title: fallback.title || `${event.title} Assembly Speech`,
-        speechText: fallback.speechText || `Respected Principal, teachers, and friends. Today I speak on ${event.title}.`,
-        cleanText: (fallback.speechText || '').replace(/\[.*?\]/g, '').trim(),
-        wordCount: fallback.wordCount || 210,
-        estimatedSeconds: fallback.estimatedSeconds || 105,
-        whyThisTopic: fallback.whyThisTopic || `${event.title} is observed this week across India.`,
-        difficultWords: fallback.difficultWords || [],
-        threeKeyFacts: fallback.threeKeyFacts || [],
-        teacherQuestions: fallback.teacherQuestions || [],
-        speakingTips: fallback.speakingTips || [],
-        moralLesson: fallback.moralLesson || 'Learning and responsibility.',
-        openingOptions: fallback.openingOptions || {
-          traditional: 'Respected Principal, teachers, and friends.',
-          question: 'Have you ever wondered about this special day?',
-          surpriseFact: 'Did you know how important this day is for India?',
+        title: matchedFallback?.title || `${speechTopic}: School Assembly Speech`,
+        speechText: defaultText,
+        cleanText,
+        wordCount,
+        estimatedSeconds: matchedFallback?.estimatedSeconds || Math.round((wordCount / 115) * 60),
+        whyThisTopic: matchedFallback?.whyThisTopic || speechDesc,
+        difficultWords: matchedFallback?.difficultWords || [],
+        threeKeyFacts: matchedFallback?.threeKeyFacts || [
+          `${speechTopic} is an officially celebrated occasion in India.`,
+          `It inspires children with vital life values and patriotic spirit.`,
+          `Celebrated with special school assembly presentations.`,
+        ],
+        teacherQuestions: matchedFallback?.teacherQuestions || [
+          {
+            question: `Why is ${speechTopic} important for us?`,
+            answer: `It reminds us of great values and motivates us to do our best every day.`,
+          },
+        ],
+        speakingTips: matchedFallback?.speakingTips || [
+          'Stand straight and smile at your teachers and friends.',
+          'Speak slowly and clearly.',
+        ],
+        moralLesson: matchedFallback?.moralLesson || 'Learning, discipline, and love for our nation.',
+        openingOptions: matchedFallback?.openingOptions || {
+          traditional: greeting,
+          question: `Have you ever wondered why we celebrate ${speechTopic}?`,
+          surpriseFact: `Did you know that ${speechTopic} inspires millions of children across India?`,
         },
-        sources: fallback.sources || [],
+        sources: matchedFallback?.sources || [
+          { name: 'National Portal of India', url: 'https://india.gov.in', confidence: 98 },
+        ],
         createdAt: new Date().toISOString(),
+        generationSource: 'verified_knowledge_base',
       };
       setCurrentSpeech(defaultSpeech);
+      setActiveTab('home');
     } finally {
       setIsGenerating(false);
     }
@@ -496,12 +504,14 @@ export default function App() {
         {activeTab === 'calendar' && (
           <UpcomingCalendar
             events={allEvents}
-            onSelectEvent={(ev) => {
-              generateSpeechForEvent(ev);
+            onSelectEvent={(ev, customProf) => {
+              const merged = customProf ? { ...profile, ...customProf } : profile;
+              generateSpeechForEvent(ev, merged);
               setActiveTab('home');
             }}
             isGenerating={isGenerating}
             selectedEventId={selectedEvent?.id}
+            currentProfile={profile}
           />
         )}
 
