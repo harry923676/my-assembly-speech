@@ -1,6 +1,6 @@
 # 🇮🇳 My Assembly Speech (Class 1–5)
 
-> **Live Application URL:** [https://my-assembly-speech.vercel.app](https://my-assembly-speech.vercel.app)  
+> **Live Application URL:** [https://ais-pre-qhf33mtxw7jbc6narr7ztf-279333895425.asia-southeast1.run.app](https://ais-pre-qhf33mtxw7jbc6narr7ztf-279333895425.asia-southeast1.run.app)  
 > **Development Preview URL:** [https://ais-dev-qhf33mtxw7jbc6narr7ztf-279333895425.asia-southeast1.run.app](https://ais-dev-qhf33mtxw7jbc6narr7ztf-279333895425.asia-southeast1.run.app)  
 > **Developer:** Pawan Paji  
 
@@ -22,7 +22,7 @@ The app automatically syncs with real-time Indian Standard Time (IST) via live n
 
 ## 🚀 Live App Links
 
-- **Production Live App:** [https://my-assembly-speech.vercel.app](https://my-assembly-speech.vercel.app)
+- **Production Live App:** [https://ais-pre-qhf33mtxw7jbc6narr7ztf-279333895425.asia-southeast1.run.app](https://ais-pre-qhf33mtxw7jbc6narr7ztf-279333895425.asia-southeast1.run.app)
 - **Dev Sandbox App:** [https://ais-dev-qhf33mtxw7jbc6narr7ztf-279333895425.asia-southeast1.run.app](https://ais-dev-qhf33mtxw7jbc6narr7ztf-279333895425.asia-southeast1.run.app)
 
 ---
@@ -60,6 +60,8 @@ The app automatically syncs with real-time Indian Standard Time (IST) via live n
 
 ## 🛠️ Deploying to Vercel
 
+Speech generation uses Gemini Google Search grounding. The `GEMINI_API_KEY` environment variable must be configured for the deployed API to search current web sources and generate fact-based speeches. The app refuses to return generic unsourced speech when this variable is unavailable.
+
 This repository is pre-configured with `vercel.json` for seamless 1-click deployment on Vercel:
 
 ### Method 1: Connect via GitHub (Recommended)
@@ -73,6 +75,7 @@ This repository is pre-configured with `vercel.json` for seamless 1-click deploy
    - **Output Directory**: `dist`
 5. In **Environment Variables**, add:
    - `GEMINI_API_KEY`: Your Google Gemini API Key from [Google AI Studio](https://aistudio.google.com/).
+   - Apply it to **Production**, **Preview**, and **Development** environments.
 6. Click **Deploy**. Vercel will build the frontend and serve both the static Vite assets and the `/api` serverless functions.
 
 ### Method 2: Deploy via Vercel CLI
