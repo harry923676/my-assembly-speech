@@ -947,6 +947,36 @@ export function getAllEventsForYear(year: number): IndianEvent[] {
       importance: 'Teaches gentleness, caring for animals, and calm reflection.',
       sourceName: 'Archaeological Survey of India / Ministry of Culture',
     },
+    {
+      key: 'mahavir_jayanti',
+      title: 'Mahavir Jayanti (Message of Non-Violence)',
+      hindiTitle: 'महावीर जयंती - अहिंसा और करुणा का संदेश',
+      category: 'Festival',
+      categoryIcon: '🪔',
+      description: 'Remembers the life and teachings of Lord Mahavira, including non-violence, truth, self-discipline, and compassion for every living being.',
+      importance: 'Teaches peaceful choices, self-control, and respect for all life.',
+      sourceName: 'Ministry of Culture, Govt of India',
+    },
+    {
+      key: 'durga_puja',
+      title: 'Durga Puja (Celebration of Courage and Goodness)',
+      hindiTitle: 'दुर्गा पूजा - शक्ति और सदाचार का उत्सव',
+      category: 'Festival',
+      categoryIcon: '🪔',
+      description: 'Celebrates the victory of Goddess Durga over evil and the values of courage, justice, devotion, and community celebration.',
+      importance: 'Teaches courage, inner strength, and standing up for what is right.',
+      sourceName: 'Ministry of Culture, Govt of India',
+    },
+    {
+      key: 'onam',
+      title: 'Onam (Festival of Harvest and Togetherness)',
+      hindiTitle: 'ओणम - फसल और एकता का पर्व',
+      category: 'Festival',
+      categoryIcon: '🪔',
+      description: 'Celebrates Kerala’s harvest season through gratitude, cultural traditions, hospitality, and joyful community gatherings.',
+      importance: 'Teaches gratitude, sharing, equality, and respect for regional traditions.',
+      sourceName: 'Kerala Tourism / Ministry of Culture',
+    },
   ];
 
   festivals.forEach((f) => {

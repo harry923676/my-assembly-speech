@@ -238,8 +238,13 @@ export default function App() {
 
     try {
       const now = new Date();
-      const todayStr = now.toISOString().split('T')[0];
-      const ranked = rankEventsForDate(todayStr, now.getFullYear());
+      const istNow = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+      const todayStr = [
+        istNow.getFullYear(),
+        String(istNow.getMonth() + 1).padStart(2, '0'),
+        String(istNow.getDate()).padStart(2, '0'),
+      ].join('-');
+      const ranked = rankEventsForDate(todayStr, istNow.getFullYear());
       setRecommendedEvent(ranked.recommended);
       setAlternativeEvents(ranked.alternatives || []);
       setAllEvents(ranked.allScored || []);
